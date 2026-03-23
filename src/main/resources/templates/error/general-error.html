@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}"></head>
+<body class="bg-light">
+<div class="container mt-5 text-center">
+    <div class="p-5 bg-white shadow rounded">
+        <h1 class="display-4 text-danger">Ops! Algo correu mal.</h1>
+        <p class="lead" th:text="${errorMessage}">Ocorreu um erro inesperado.</p>
+        <hr>
+        <p class="text-muted">Detalhes técnicos foram registados para análise.</p>
+        <a href="/clientes" class="btn btn-primary mt-3">Voltar para Início</a>
+    </div>
+</div>
+</body>
+</html>
