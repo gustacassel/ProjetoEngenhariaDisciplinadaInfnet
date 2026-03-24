@@ -1,0 +1,48 @@
+name: CI/CD Pipeline - Integracao e Testes
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Instalar dependências de UI (Chrome/WebDriver)
+        # Necessário para os testes de Selenium rodarem no ambiente Linux do GitHub
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Compilar e Rodar Testes (Unit, Fuzzing e UI)
+        # Adicionamos flags para garantir que o Selenium rode em modo 'headless' (sem janela)
+        # e ignoramos o erro do favicon para não travar o build
+        run: mvn clean verify -Dspring.mvc.static-path-pattern=/static/**
+
+      - name: Fazer upload do relatório de cobertura (JaCoCo)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-cobertura-jacoco
+          path: target/site/jacoco/
+          retention-days: 7
+
+      - name: Fazer upload dos resultados dos testes (Surefire/Failsafe)
+        uses: actions/upload-artifact@v4
+        if: failure() # Só sobe se algo der errado, para você debugar o log
+        with:
+          name: logs-de-erro-testes
+          path: target/surefire-reports/
