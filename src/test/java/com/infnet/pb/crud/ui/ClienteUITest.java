@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,7 +20,12 @@ public class ClienteUITest {
 
     @BeforeEach
     void setup() {
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new"); // Modo invisível (essencial para CI/CD)
+        options.addArguments("--no-sandbox");    // Necessário para rodar como root no Linux do GitHub
+        options.addArguments("--disable-dev-shm-usage"); // Evita falta de memória em containers
+
+        this.driver = new ChromeDriver(options);
     }
 
     @Test

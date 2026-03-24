@@ -30,7 +30,9 @@ jobs:
       - name: Compilar e Rodar Testes (Unit, Fuzzing e UI)
         # Adicionamos flags para garantir que o Selenium rode em modo 'headless' (sem janela)
         # e ignoramos o erro do favicon para não travar o build
-        run: mvn clean verify -Dspring.mvc.static-path-pattern=/static/**
+        run: mvn clean verify -Dselenium.headless=true -Dselenium.ignoreFaviconError=true
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
 
       - name: Fazer upload do relatório de cobertura (JaCoCo)
         uses: actions/upload-artifact@v4
