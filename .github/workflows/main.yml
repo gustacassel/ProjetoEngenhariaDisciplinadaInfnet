@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - Integracao e Testes
+name: CI/CD Pipeline - Integração e Testes
 on:
   push:
     branches: [ "main" ]
@@ -21,30 +21,20 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Instalar dependências de UI (Chrome/WebDriver)
-        # Necessário para os testes de Selenium rodarem no ambiente Linux do GitHub
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+      - name: Executar Build e Testes
+        run: mvn clean verify -Dheadless=true
 
-      - name: Compilar e Rodar Testes (Unit, Fuzzing e UI)
-        # Adicionamos flags para garantir que o Selenium rode em modo 'headless' (sem janela)
-        # e ignoramos o erro do favicon para não travar o build
-        run: mvn clean verify -Dselenium.headless=true -Dselenium.ignoreFaviconError=true
-        env:
-          CHROME_BIN: /usr/bin/google-chrome
-
-      - name: Fazer upload do relatório de cobertura (JaCoCo)
+      - name: Upload Relatório JaCoCo
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: relatorio-cobertura-jacoco
+          name: relatorio-cobertura
           path: target/site/jacoco/
-          retention-days: 7
+          retention-days: 5
 
-      - name: Fazer upload dos resultados dos testes (Surefire/Failsafe)
+      - name: Upload Logs de Erro (Surefire)
         uses: actions/upload-artifact@v4
-        if: failure() # Só sobe se algo der errado, para você debugar o log
+        if: failure()
         with:
-          name: logs-de-erro-testes
+          name: surefire-reports
           path: target/surefire-reports/
