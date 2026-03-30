@@ -101,4 +101,18 @@ class ClienteServiceTest {
             assertTrue(e instanceof RuntimeException);
         }
     }
+
+    @Test
+    void deveLancarExcecaoAoBuscarClienteInexistente() {
+        assertThrows(RecursoNaoEncontradoException.class, () -> {
+            service.buscarPorId(999L); // ID que não existe
+        });
+    }
+
+    @Test
+    void deveLancarExcecaoAoExcluirInexistente() {
+        assertThrows(RecursoNaoEncontradoException.class, () -> {
+            service.excluir(999L);
+        });
+    }
 }
