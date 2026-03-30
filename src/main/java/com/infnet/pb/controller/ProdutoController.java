@@ -3,9 +3,11 @@ package com.infnet.pb.controller;
 import com.infnet.pb.exception.RegraNegocioException;
 import com.infnet.pb.model.Produto;
 import com.infnet.pb.service.ProdutoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,15 +35,22 @@ public class ProdutoController {
     }
 
     @PostMapping("/salvar")
-    public String salvar(@ModelAttribute("produto") Produto produto, RedirectAttributes ra) {
+    public String salvar(@Valid @ModelAttribute("produto") Produto produto,
+                         BindingResult result,
+                         Model model,
+                         RedirectAttributes ra) {
+
+        if (result.hasErrors()) {
+            return "produto/form";
+        }
+
         try {
             service.salvar(produto);
             ra.addFlashAttribute("mensagemSucesso", "Produto salvo com sucesso!");
             return "redirect:/produtos";
         } catch (RegraNegocioException e) {
-            ra.addFlashAttribute("erro", e.getMessage());
-            ra.addFlashAttribute("produto", produto);
-            return "redirect:/produtos/novo";
+            model.addAttribute("erro", e.getMessage());
+            return "produto/form";
         }
     }
 
