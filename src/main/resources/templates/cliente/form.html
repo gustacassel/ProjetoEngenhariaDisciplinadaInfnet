@@ -16,7 +16,8 @@
 
                 <div class="card-body p-4">
 
-                    <div th:if="${erroNegocio}" class="alert alert-danger d-flex align-items-center border-0 shadow-sm" role="alert">
+                    <div th:if="${erroNegocio}" class="alert alert-danger d-flex align-items-center border-0 shadow-sm"
+                         role="alert">
                         <i class="bi bi-exclamation-triangle-fill me-2"></i>
                         <div th:text="${erroNegocio}"></div>
                     </div>
@@ -35,7 +36,8 @@
                             <label class="form-label">E-mail</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
-                                <input type="email" th:field="*{email}" class="form-control" placeholder="joao@email.com"
+                                <input type="email" th:field="*{email}" class="form-control"
+                                       placeholder="joao@email.com"
                                        th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
                             </div>
                             <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
@@ -53,7 +55,8 @@
                                 <label class="form-label">Limite de Crédito</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light">R$</span>
-                                    <input type="number" step="0.01" th:field="*{limiteCredito}" class="form-control" placeholder="0,00"
+                                    <input type="number" step="0.01" th:field="*{limiteCredito}" class="form-control"
+                                           placeholder="0,00"
                                            th:classappend="${#fields.hasErrors('limiteCredito')} ? 'is-invalid'">
                                 </div>
                                 <div class="error-message" th:if="${#fields.hasErrors('limiteCredito')}"

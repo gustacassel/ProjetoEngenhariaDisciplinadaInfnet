@@ -16,7 +16,8 @@
 
                 <div class="card-body p-4">
 
-                    <div th:if="${erro}" class="alert alert-danger d-flex align-items-center border-0 shadow-sm" role="alert">
+                    <div th:if="${erro}" class="alert alert-danger d-flex align-items-center border-0 shadow-sm"
+                         role="alert">
                         <i class="bi bi-exclamation-triangle-fill me-2"></i>
                         <div th:text="${erro}"></div>
                     </div>
@@ -26,15 +27,18 @@
 
                         <div class="mb-4">
                             <label class="form-label">Nome do Produto</label>
-                            <input type="text" th:field="*{nome}" class="form-control" placeholder="Ex: Teclado Mecânico RGB"
+                            <input type="text" th:field="*{nome}" class="form-control"
+                                   placeholder="Ex: Teclado Mecânico RGB"
                                    th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'">
                             <div class="error-message" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label">Descrição</label>
-                            <textarea th:field="*{descricao}" class="form-control" rows="2" placeholder="Breve descrição do produto..."></textarea>
-                            <div class="error-message" th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}"></div>
+                            <textarea th:field="*{descricao}" class="form-control" rows="2"
+                                      placeholder="Breve descrição do produto..."></textarea>
+                            <div class="error-message" th:if="${#fields.hasErrors('descricao')}"
+                                 th:errors="*{descricao}"></div>
                         </div>
 
                         <div class="row mb-4">
@@ -42,19 +46,23 @@
                                 <label class="form-label">Preço de Venda</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light">R$</span>
-                                    <input type="number" step="0.01" th:field="*{preco}" class="form-control" placeholder="0,00"
+                                    <input type="number" step="0.01" th:field="*{preco}" class="form-control"
+                                           placeholder="0,00"
                                            th:classappend="${#fields.hasErrors('preco')} ? 'is-invalid'">
                                 </div>
-                                <div class="error-message" th:if="${#fields.hasErrors('preco')}" th:errors="*{preco}"></div>
+                                <div class="error-message" th:if="${#fields.hasErrors('preco')}"
+                                     th:errors="*{preco}"></div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Quantidade em Estoque</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="bi bi-hash"></i></span>
-                                    <input type="number" th:field="*{quantidadeEstoque}" class="form-control" placeholder="0"
+                                    <input type="number" th:field="*{quantidadeEstoque}" class="form-control"
+                                           placeholder="0"
                                            th:classappend="${#fields.hasErrors('quantidadeEstoque')} ? 'is-invalid'">
                                 </div>
-                                <div class="error-message" th:if="${#fields.hasErrors('quantidadeEstoque')}" th:errors="*{quantidadeEstoque}"></div>
+                                <div class="error-message" th:if="${#fields.hasErrors('quantidadeEstoque')}"
+                                     th:errors="*{quantidadeEstoque}"></div>
                             </div>
                         </div>
 
