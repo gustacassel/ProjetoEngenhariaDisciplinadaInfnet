@@ -84,4 +84,12 @@ class ProdutoServiceTest {
         Produto p = new Produto(null, nomeCurto, "Desc", 100.0, 10);
         assertThrows(RegraNegocioException.class, () -> service.salvar(p));
     }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao tentar excluir ID inexistente")
+    void deveFalharAoExcluirInexistente() {
+        assertThrows(RecursoNaoEncontradoException.class, () -> {
+            service.excluir(9999L);
+        });
+    }
 }

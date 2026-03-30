@@ -1,5 +1,7 @@
 package com.infnet.pb.crud.controller;
 
+import com.infnet.pb.model.Produto;
+import com.infnet.pb.repository.ProdutoRepository; // Adicione este import
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +23,11 @@ class ProdutoControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private ProdutoRepository repository;
+
     @BeforeEach
     void setup() {
-        // Inicializa o MockMvc com o contexto da aplicação para testes de integração web
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
@@ -64,9 +68,28 @@ class ProdutoControllerTest {
                         .param("nome", "") // Nome vazio costuma ser erro de validação
                         .param("preco", "-50.00")
                         .param("quantidadeEstoque", "-10"))
-                // Se o controller estiver validando, ele volta pro form (Status 200)
-                // Se não estiver, ele vai redirecionar (Status 302)
                 .andExpect(status().isOk())
                 .andExpect(view().name("produto/form"));
+    }
+
+    @Test
+    @DisplayName("Deve carregar formulário de edição com dados do produto")
+    void deveCarregarFormEdicao() throws Exception {
+        Produto p = repository.save(new Produto(null, "Editavel", "Desc", 10.0, 5));
+
+        mockMvc.perform(get("/produtos/editar/" + p.getId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("produto/form"))
+                .andExpect(model().attributeExists("produto"));
+    }
+
+    @Test
+    @DisplayName("Deve excluir um produto e redirecionar")
+    void deveExcluirProduto() throws Exception {
+        Produto p = repository.save(new Produto(null, "Deletar", "Desc", 10.0, 5));
+
+        mockMvc.perform(get("/produtos/excluir/" + p.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/produtos"));
     }
 }
