@@ -10,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.openqa.selenium.JavascriptExecutor;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,6 +25,7 @@ public class ClienteUITest {
         options.addArguments("--headless=new"); // Modo invisível (essencial para CI/CD)
         options.addArguments("--no-sandbox");    // Necessário para rodar como root no Linux do GitHub
         options.addArguments("--disable-dev-shm-usage"); // Evita falta de memória em containers
+        options.addArguments("--window-size=1920,1080");
 
         this.driver = new ChromeDriver(options);
     }
@@ -40,9 +42,13 @@ public class ClienteUITest {
         driver.findElement(By.id("limiteCredito")).sendKeys("1000");
 
         // Clica no botão de salvar
-        driver.findElement(By.cssSelector("button[type='submit']")).click();
+        WebElement botaoSalvar = driver.findElement(By.cssSelector("button[type='submit']"));
 
-        // Procura a mensagem de erro que definimos no nosso layout.html
+        // O JavaScriptExecutor força o clique diretamente no evento do DOM
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].click();", botaoSalvar);
+
+        // Procura a mensagem de erro
         WebElement feedbackErro = driver.findElement(By.className("error-message"));
 
         assertTrue(feedbackErro.getText().contains("O nome deve ter entre 3 e 100 caracteres"),
