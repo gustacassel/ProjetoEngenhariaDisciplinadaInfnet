@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}"></head>
+<body>
+<div th:replace="~{layout :: menu}"></div>
+
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+
+                <div class="card-header bg-white border-bottom py-3 d-flex align-items-center">
+                    <i class="bi bi-box-seam-fill fs-4 text-primary me-2"></i>
+                    <h4 class="mb-0 fw-bold" th:text="${produto.id == null ? 'Novo Produto' : 'Editar Produto'}"></h4>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <div th:if="${erro}" class="alert alert-danger d-flex align-items-center border-0 shadow-sm" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div th:text="${erro}"></div>
+                    </div>
+
+                    <form th:action="@{/produtos/salvar}" th:object="${produto}" method="post">
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="mb-4">
+                            <label class="form-label">Nome do Produto</label>
+                            <input type="text" th:field="*{nome}" class="form-control" placeholder="Ex: Teclado Mecânico RGB"
+                                   th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'">
+                            <div class="error-message" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Descrição</label>
+                            <textarea th:field="*{descricao}" class="form-control" rows="2" placeholder="Breve descrição do produto..."></textarea>
+                            <div class="error-message" th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}"></div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label">Preço de Venda</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">R$</span>
+                                    <input type="number" step="0.01" th:field="*{preco}" class="form-control" placeholder="0,00"
+                                           th:classappend="${#fields.hasErrors('preco')} ? 'is-invalid'">
+                                </div>
+                                <div class="error-message" th:if="${#fields.hasErrors('preco')}" th:errors="*{preco}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Quantidade em Estoque</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-hash"></i></span>
+                                    <input type="number" th:field="*{quantidadeEstoque}" class="form-control" placeholder="0"
+                                           th:classappend="${#fields.hasErrors('quantidadeEstoque')} ? 'is-invalid'">
+                                </div>
+                                <div class="error-message" th:if="${#fields.hasErrors('quantidadeEstoque')}" th:errors="*{quantidadeEstoque}"></div>
+                            </div>
+                        </div>
+
+                        <hr class="text-muted my-4">
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="/produtos" class="btn btn-light border">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-lg"></i> Salvar Produto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
