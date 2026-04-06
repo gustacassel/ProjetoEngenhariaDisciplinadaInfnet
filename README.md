@@ -108,7 +108,3 @@ Para iniciar o servidor localmente:
 mvn spring-boot:run
 ```
 * Acesse `http://localhost:8080` para interagir com a aplicação via interface web.
-* Acesso ao H2 Console: `http://localhost:8080/h2-console`
-  * JDBC URL: `jdbc:h2:mem:cruddb`
-  * Username: `sa`
-  * Password: (deixe em branco)
