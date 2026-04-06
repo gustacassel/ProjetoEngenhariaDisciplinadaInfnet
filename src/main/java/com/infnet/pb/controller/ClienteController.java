@@ -25,43 +25,43 @@ public class ClienteController {
     }
 
     @GetMapping("/novo")
-    public String novoForm(Model model) {
-        model.addAttribute("cliente", new Cliente());
+    public String exibirFormularioNovo(Model model) {
+        if (!model.containsAttribute("cliente")) {
+            model.addAttribute("cliente", new Cliente());
+        }
         return "cliente/form";
     }
 
     @PostMapping("/salvar")
     public String salvar(@Valid @ModelAttribute("cliente") Cliente cliente,
                          BindingResult result,
-                         RedirectAttributes attributes,
+                         RedirectAttributes ra,
                          Model model) {
 
-        // Fail Early: Erros de validação de campo (ex: email inválido)
         if (result.hasErrors()) {
             return "cliente/form";
         }
 
         try {
             service.salvar(cliente);
-            attributes.addFlashAttribute("mensagemSucesso", "Cliente salvo com sucesso!");
+            ra.addFlashAttribute("mensagemSucesso", "Cliente salvo com sucesso!");
             return "redirect:/clientes";
         } catch (RegraNegocioException e) {
-            // Fail Gracefully: Erro de negócio (ex: email duplicado) volta para o form com mensagem
-            model.addAttribute("erroNegocio", e.getMessage());
+            model.addAttribute("mensagemErro", e.getMessage());
             return "cliente/form";
         }
     }
 
     @GetMapping("/editar/{id}")
-    public String editarForm(@PathVariable Long id, Model model) {
+    public String exibirFormularioEditar(@PathVariable Long id, Model model) {
         model.addAttribute("cliente", service.buscarPorId(id));
         return "cliente/form";
     }
 
     @GetMapping("/excluir/{id}")
-    public String excluir(@PathVariable Long id, RedirectAttributes attributes) {
+    public String excluir(@PathVariable Long id, RedirectAttributes ra) {
         service.excluir(id);
-        attributes.addFlashAttribute("mensagemSucesso", "Cliente removido com sucesso!");
+        ra.addFlashAttribute("mensagemSucesso", "Cliente removido com sucesso!");
         return "redirect:/clientes";
     }
 }

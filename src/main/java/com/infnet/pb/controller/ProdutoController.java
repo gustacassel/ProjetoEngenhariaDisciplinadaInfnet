@@ -11,18 +11,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/produtos")
 @RequiredArgsConstructor
 public class ProdutoController {
+
     private final ProdutoService service;
 
     @GetMapping
     public String listar(Model model) {
-        List<Produto> produtos = service.listarTodos();
-        model.addAttribute("produtos", produtos);
+        model.addAttribute("produtos", service.listarTodos());
         return "produto/lista";
     }
 
@@ -37,8 +35,8 @@ public class ProdutoController {
     @PostMapping("/salvar")
     public String salvar(@Valid @ModelAttribute("produto") Produto produto,
                          BindingResult result,
-                         Model model,
-                         RedirectAttributes ra) {
+                         RedirectAttributes ra,
+                         Model model) {
 
         if (result.hasErrors()) {
             return "produto/form";
@@ -49,30 +47,21 @@ public class ProdutoController {
             ra.addFlashAttribute("mensagemSucesso", "Produto salvo com sucesso!");
             return "redirect:/produtos";
         } catch (RegraNegocioException e) {
-            model.addAttribute("erro", e.getMessage());
+            model.addAttribute("mensagemErro", e.getMessage());
             return "produto/form";
         }
     }
 
     @GetMapping("/editar/{id}")
     public String exibirFormularioEditar(@PathVariable Long id, Model model) {
-        try {
-            Produto produto = service.buscarPorId(id);
-            model.addAttribute("produto", produto);
-            return "produto/form";
-        } catch (Exception e) {
-            return "redirect:/produtos";
-        }
+        model.addAttribute("produto", service.buscarPorId(id));
+        return "produto/form";
     }
 
     @GetMapping("/excluir/{id}")
     public String excluir(@PathVariable Long id, RedirectAttributes ra) {
-        try {
-            service.excluir(id);
-            ra.addFlashAttribute("mensagemSucesso", "Produto excluído com sucesso!");
-        } catch (Exception e) {
-            ra.addFlashAttribute("erro", "Erro ao excluir produto.");
-        }
+        service.excluir(id);
+        ra.addFlashAttribute("mensagemSucesso", "Produto removido com sucesso!");
         return "redirect:/produtos";
     }
 }
