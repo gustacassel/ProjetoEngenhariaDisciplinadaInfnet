@@ -5,13 +5,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,15 +51,17 @@ public class ClienteUITest {
         // Clica no botão de salvar
         WebElement botaoSalvar = driver.findElement(By.cssSelector("button[type='submit']"));
 
-        // O JavaScriptExecutor força o clique diretamente no evento do DOM
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].click();", botaoSalvar);
+        botaoSalvar.click();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         // Procura a mensagem de erro
-        WebElement feedbackErro = driver.findElement(By.className("error-message"));
+        WebElement feedbackErro = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.className("invalid-feedback"))
+        );
 
         assertTrue(feedbackErro.getText().contains("O nome deve ter entre 3 e 100 caracteres"),
-                "A mensagem de validação não apareceu ou está incorreta!");
+                "A mensagem de validação não apareceu ou está incorreta! Texto atual: " + feedbackErro.getText());
     }
 
     @Test
