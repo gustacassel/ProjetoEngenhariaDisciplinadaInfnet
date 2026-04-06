@@ -45,4 +45,29 @@ class GlobalExceptionHandlerTest {
                 .andExpect(model().attributeExists("errorMessage"))
                 .andExpect(model().attribute("technicalDetail", "RuntimeException"));
     }
+
+    @Test
+    @DisplayName("Deve capturar RecursoNaoEncontradoException e retornar view 404")
+    void deveTratarRecursoNaoEncontrado() throws Exception {
+        Mockito.when(produtoService.buscarPorId(anyLong()))
+                .thenThrow(new RecursoNaoEncontradoException("Produto não localizado"));
+
+        mockMvc.perform(get("/produtos/editar/999"))
+                .andExpect(status().isOk()) // 200 porque a página de erro renderiza com sucesso
+                .andExpect(view().name("error/404"))
+                .andExpect(model().attribute("errorMessage", "Produto não localizado"));
+    }
+
+    @Test
+    @DisplayName("Deve capturar RegraNegocioException e retornar view general-error")
+    void deveTratarRegraNegocio() throws Exception {
+        Mockito.doThrow(new RegraNegocioException("Violação de regra de negócio"))
+                .when(produtoService).excluir(anyLong());
+
+        mockMvc.perform(get("/produtos/excluir/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("error/general-error"))
+                .andExpect(model().attribute("errorMessage", "Violação de regra de negócio"))
+                .andExpect(model().attributeExists("url")); // Verifica se injetou o objeto 'url' do HttpServletRequest
+    }
 }
